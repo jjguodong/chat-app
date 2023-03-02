@@ -38,10 +38,18 @@ function App() {
       config: { ...config, stop: [" Human:", " AI:"] },
       prompt: prevPropmt
     }
-    const {data} = await chatApi(params)
-    const result = parseContent(prevPropmt + data.result);
-    setList(result);
+    setList([...list, { content: prompt, author: 'Human'}, { content: '思考中...', author: 'AI'}])
     setPrompt('');
+    setLoading(true)
+    try {
+      const {data} = await chatApi(params)
+      const result = parseContent(prevPropmt + data.result);
+      setList(result);
+      setLoading(false)
+    } catch (error) {
+      setLoading(false)
+    }
+
   }
   const parseContent = (content)=>{
     const list = content.split('\n').filter(Boolean);
